@@ -1,6 +1,7 @@
 module Lib where
 
 import GHC.Natural
+import Data.List
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
@@ -16,14 +17,11 @@ newtype ListLength = ListLength Natural
   deriving (Eq, Show)
 
 initialPositives :: ListLength -> [Natural]
-initialPositives = reverse . aux
+initialPositives l = reverse $ unfoldr aux l
   where
-    aux :: ListLength -> [Natural]
-    aux (ListLength n)
-      | n == 0 = []
-      | otherwise = n:ns
-        where
-          ns = aux . ListLength $ n `minusNatural` intToNatural 1
+    aux :: ListLength -> Maybe (Natural, ListLength)
+    aux (ListLength n) = if n == 0 then Nothing else Just (n, ListLength nMinusOne)
+      where nMinusOne = n `minusNatural` intToNatural 1
 
 data FizzBuzz =
     Fizz Natural
