@@ -6,7 +6,6 @@ import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.QuickCheck.Arbitrary
 import Lib
-import Positive
 
 instance Arbitrary Natural where
   arbitrary = arbitrarySizedNatural
@@ -44,7 +43,7 @@ spec = describe "All Lib functions" $ do
     prop "output's sum is n * ( n + 1 ) / 2" $
       \n ->
         let r = toRational n
-        in toRational (sum $ fmap positiveToInt (initialPositives $ ListLength n)) == r * (r + 1) / 2
+        in toRational (sum $ initialPositives $ ListLength n) == r * (r + 1) / 2
 
 
   describe "fizzBuzz" $ do
@@ -59,3 +58,13 @@ spec = describe "All Lib functions" $ do
 
     it "of 15 is FizzBuzz 15" $
       fizzBuzz 15 `shouldBe` FizzBuzz 15
+
+
+  describe "fizzBuzzList" $ do
+    it "of ListLength 15 is [Regular 1, Regular 2, Fizz 3, Regular 4, Buzz 5, Fizz 6, ..., FizzBuzz 15]" $
+      fizzBuzzList (ListLength 15) `shouldBe`
+        [
+          Regular 1, Regular 2, Fizz 3, Regular 4, Buzz 5,
+          Fizz 6, Regular 7, Regular 8, Fizz 9, Buzz 10,
+          Regular 11, Fizz 12, Regular 13, Regular 14, FizzBuzz 15
+        ]

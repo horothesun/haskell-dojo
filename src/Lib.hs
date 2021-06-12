@@ -1,7 +1,6 @@
 module Lib where
 
 import GHC.Natural
-import Positive
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
@@ -13,22 +12,18 @@ isPalindrome s = s == reverse s
 
 
 
-positiveToNatural :: Positive -> Natural
-positiveToNatural = intToNatural . positiveToInt
-
 newtype ListLength = ListLength Natural
   deriving (Eq, Show)
 
-initialPositives :: ListLength -> [Positive]
+initialPositives :: ListLength -> [Natural]
 initialPositives = reverse . aux
   where
-    aux :: ListLength -> [Positive]
+    aux :: ListLength -> [Natural]
     aux (ListLength n)
       | n == 0 = []
-      | otherwise = p:ps
+      | otherwise = n:ns
         where
-          p = unsafeIntToPositive (naturalToInt n)
-          ps = aux . ListLength $ n `minusNatural` intToNatural 1
+          ns = aux . ListLength $ n `minusNatural` intToNatural 1
 
 data FizzBuzz =
     Fizz Natural
@@ -45,7 +40,7 @@ fizzBuzz n
   | otherwise                        = Regular n
 
 fizzBuzzList :: ListLength -> [FizzBuzz]
-fizzBuzzList l = fmap (fizzBuzz . positiveToNatural) (initialPositives l)
+fizzBuzzList l = fmap fizzBuzz (initialPositives l)
 
 fizzBuzzDescription :: FizzBuzz -> String
 fizzBuzzDescription x = case x of
