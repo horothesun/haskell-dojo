@@ -1,16 +1,19 @@
 module LibSpec where
 
 import Test.Hspec
-import Test.Hspec.QuickCheck
-import Test.QuickCheck.Property
 import Lib
 
 spec :: Spec
-spec = describe "Simple test" $ do
+spec = describe "isPalindrome" $ do
 
-     it "example-based unit test" $
-        1 `shouldBe` 1
+  it "of \"ciao\" returns false" $
+    isPalindrome "ciao" `shouldBe` False
 
-     prop "property-based unit test" $
-        \l -> reverse ( reverse l ) == ( l::[Int])
+  it "of \"\" returns true" $
+    isPalindrome "" `shouldBe` True
 
+  it "of \"noon\" returns true" $
+    isPalindrome "noon" `shouldBe` True
+
+  it "of \"radar\" returns true" $
+    isPalindrome "radar" `shouldBe` True
