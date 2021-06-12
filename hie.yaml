@@ -1,0 +1,14 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "haskell-dojo:lib"
+
+    - path: "./app/Main.hs"
+      component: "haskell-dojo:exe:haskell-dojo-exe"
+
+    - path: "./app/Paths_haskell_toy_example.hs"
+      component: "haskell-dojo:exe:haskell-dojo-exe"
+
+    - path: "./test"
+      component: "haskell-dojo:test:haskell-dojo-test"
+
