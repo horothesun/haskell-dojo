@@ -5,7 +5,6 @@ import Data.List
 import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.QuickCheck.Arbitrary
-import Test.QuickCheck.Gen
 import Lib
 
 instance Arbitrary Natural where
@@ -14,12 +13,6 @@ instance Arbitrary Natural where
 
 instance Arbitrary ListLength where
   arbitrary = ListLength <$> arbitrary
-
--- instance Arbitrary FizzBuzz where
---   arbitrary = do
---     n <- arbitrary
---     fb <- elements [Fizz n, Buzz n, FizzBuzz n, Regular n]
---     return fb
 
 spec :: Spec
 spec = describe "All Lib functions" $ do
