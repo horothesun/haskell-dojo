@@ -17,11 +17,13 @@ newtype ListLength = ListLength Natural
   deriving (Eq, Show)
 
 initialPositives :: ListLength -> [Natural]
-initialPositives l = reverse $ unfoldr aux l
+initialPositives listLength = unfoldr aux (1, listLength)
   where
-    aux :: ListLength -> Maybe (Natural, ListLength)
-    aux (ListLength n) = if n == 0 then Nothing else Just (n, ListLength nMinusOne)
-      where nMinusOne = n `minusNatural` intToNatural 1
+    aux :: (Natural, ListLength) -> Maybe (Natural, (Natural, ListLength))
+    aux (acc, l@(ListLength n)) =
+      if acc == 1 + n
+      then Nothing
+      else Just (acc, (1 + acc, l))
 
 data FizzBuzz =
     Fizz Natural
