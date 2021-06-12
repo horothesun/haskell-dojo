@@ -16,16 +16,19 @@ isPalindrome s = s == reverse s
 positiveToNatural :: Positive -> Natural
 positiveToNatural = intToNatural . positiveToInt
 
-initialPositives :: Natural -> [Positive]
-initialPositives = reverse . initialPositivesAux
+newtype ListLength = ListLength Natural
+  deriving (Eq, Show)
+
+initialPositives :: ListLength -> [Positive]
+initialPositives = reverse . aux
   where
-    initialPositivesAux :: Natural -> [Positive]
-    initialPositivesAux n
+    aux :: ListLength -> [Positive]
+    aux (ListLength n)
       | n == 0 = []
       | otherwise = p:ps
         where
           p = unsafeIntToPositive (naturalToInt n)
-          ps = initialPositivesAux (n `minusNatural` intToNatural 1)
+          ps = aux . ListLength $ n `minusNatural` intToNatural 1
 
 data FizzBuzz =
     Fizz Natural
@@ -34,15 +37,15 @@ data FizzBuzz =
   | Regular Natural
   deriving (Eq, Show)
 
-fizzBuzzAux :: Natural -> FizzBuzz
-fizzBuzzAux n
+fizzBuzz :: Natural -> FizzBuzz
+fizzBuzz n
   | n `mod` 3 == 0 && n `mod` 5 == 0 = FizzBuzz n
   | n `mod` 3 == 0                   = Fizz n
   | n `mod` 5 == 0                   = Buzz n
   | otherwise                        = Regular n
 
-fizzBuzz :: Natural -> [FizzBuzz]
-fizzBuzz n = fmap (fizzBuzzAux . positiveToNatural) (initialPositives n)
+fizzBuzzList :: ListLength -> [FizzBuzz]
+fizzBuzzList l = fmap (fizzBuzz . positiveToNatural) (initialPositives l)
 
 fizzBuzzDescription :: FizzBuzz -> String
 fizzBuzzDescription x = case x of

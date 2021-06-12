@@ -12,6 +12,9 @@ instance Arbitrary Natural where
   arbitrary = arbitrarySizedNatural
   shrink    = shrinkIntegral
 
+instance Arbitrary ListLength where
+  arbitrary = ListLength <$> arbitrary
+
 spec :: Spec
 spec = describe "All Lib functions" $ do
 
@@ -36,23 +39,23 @@ spec = describe "All Lib functions" $ do
         in outs == sort outs
 
     prop "output's length is the input value" $
-      \n -> length (initialPositives n) == naturalToInt n
+      \n -> length (initialPositives $ ListLength n) == naturalToInt n
 
     prop "output's sum is n * ( n + 1 ) / 2" $
       \n ->
         let r = toRational n
-        in toRational (sum (fmap positiveToInt (initialPositives n))) == r * (r + 1) / 2
+        in toRational (sum $ fmap positiveToInt (initialPositives $ ListLength n)) == r * (r + 1) / 2
 
 
-  describe "fizzBuzzAux" $ do
+  describe "fizzBuzz" $ do
     it "of 1 is Regular 1" $
-      fizzBuzzAux 1 `shouldBe` Regular 1
+      fizzBuzz 1 `shouldBe` Regular 1
 
     it "of 3 is Fizz 3" $
-      fizzBuzzAux 3 `shouldBe` Fizz 3
+      fizzBuzz 3 `shouldBe` Fizz 3
 
     it "of 5 is Fizz 5" $
-      fizzBuzzAux 5 `shouldBe` Buzz 5
+      fizzBuzz 5 `shouldBe` Buzz 5
 
     it "of 15 is FizzBuzz 15" $
-      fizzBuzzAux 15 `shouldBe` FizzBuzz 15
+      fizzBuzz 15 `shouldBe` FizzBuzz 15
