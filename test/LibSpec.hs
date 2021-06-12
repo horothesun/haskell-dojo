@@ -5,6 +5,7 @@ import Data.List
 import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.QuickCheck.Arbitrary
+import Test.QuickCheck.Gen
 import Lib
 
 instance Arbitrary Natural where
@@ -13,6 +14,12 @@ instance Arbitrary Natural where
 
 instance Arbitrary ListLength where
   arbitrary = ListLength <$> arbitrary
+
+-- instance Arbitrary FizzBuzz where
+--   arbitrary = do
+--     n <- arbitrary
+--     fb <- elements [Fizz n, Buzz n, FizzBuzz n, Regular n]
+--     return fb
 
 spec :: Spec
 spec = describe "All Lib functions" $ do
@@ -71,3 +78,16 @@ spec = describe "All Lib functions" $ do
           Fizz 6, Regular 7, Regular 8, Fizz 9, Buzz 10,
           Regular 11, Fizz 12, Regular 13, Regular 14, FizzBuzz 15
         ]
+
+  describe "fizzBuzzDescription" $ do
+    prop "of (Fizz n) is \"Fizz!\"" $
+      \n -> fizzBuzzDescription (Fizz n) == "Fizz!"
+
+    prop "of (Buzz n) is \"Buzz!\"" $
+      \n -> fizzBuzzDescription (Buzz n) == "Buzz!"
+
+    prop "of (FizzBuzz n) is \"FizzBuzz!\"" $
+      \n -> fizzBuzzDescription (FizzBuzz n) == "FizzBuzz!"
+
+    it "of (Regular 8) is \"8\"" $
+      fizzBuzzDescription (Regular 8) `shouldBe` "8"

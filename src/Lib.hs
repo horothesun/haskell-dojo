@@ -41,7 +41,7 @@ fizzBuzzList :: ListLength -> [FizzBuzz]
 fizzBuzzList l = fmap fizzBuzz (initialPositives l)
 
 fizzBuzzDescription :: FizzBuzz -> String
-fizzBuzzDescription x = case x of
+fizzBuzzDescription fb = case fb of
   Fizz _     -> "Fizz!"
   Buzz _     -> "Buzz!"
   FizzBuzz _ -> "FizzBuzz!"
