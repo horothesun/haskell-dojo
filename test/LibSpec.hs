@@ -32,6 +32,9 @@ spec = describe "All Lib functions" $ do
 
 
   describe "initialPositives" $ do
+    prop "output's elements are all > 0" $
+      \n -> all (> 0) $ initialPositives n
+
     prop "output's sorted in ascending order" $
       \n ->
         let outs = initialPositives n
