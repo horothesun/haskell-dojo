@@ -4,7 +4,7 @@ import GHC.Natural
 import Data.List
 
 someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+someFunc = fizzBuzzPrint $ ListLength 30
 
 
 
@@ -48,3 +48,12 @@ fizzBuzzDescription fb = case fb of
   Buzz _     -> "Buzz!"
   FizzBuzz _ -> "FizzBuzz!"
   Regular n  -> show n
+
+fizzBuzzDescriptions :: ListLength -> [String]
+fizzBuzzDescriptions l = fmap fizzBuzzDescription (fizzBuzzList l)
+
+putMultipleStrLn :: Show a => [a] -> IO ()
+putMultipleStrLn = putStr . unlines . fmap show
+
+fizzBuzzPrint :: ListLength -> IO ()
+fizzBuzzPrint = putMultipleStrLn . fizzBuzzDescriptions
