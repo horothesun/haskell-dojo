@@ -7,6 +7,7 @@ import Test.Hspec.QuickCheck
 import Test.QuickCheck.Arbitrary
 import Lib
 
+
 instance Arbitrary Natural where
   arbitrary = arbitrarySizedNatural
   shrink    = shrinkIntegral
