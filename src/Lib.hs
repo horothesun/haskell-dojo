@@ -65,7 +65,7 @@ readMaybeNatural = readMaybe
 fizzBuzzProgram :: IO ()
 fizzBuzzProgram = do
   putStr "Insert the list length: "
-  hFlush stdout
+  hFlush stdout -- prevents `getLine` getting executed before `putStr`
   s <- getLine
   case readMaybeNatural s of
     Nothing -> putStrLn $ "Error: can't parse Natural from \"" ++ s ++ "\""
