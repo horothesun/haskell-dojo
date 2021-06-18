@@ -58,8 +58,8 @@ fizzBuzzDescription fb = case fb of
 fizzBuzzDescriptions :: ListLength -> [String]
 fizzBuzzDescriptions l = fizzBuzzDescription <$> fizzBuzzList l
 
-putMultipleStrLn :: [String] -> IO ()
-putMultipleStrLn = putStr . unlines
+putMultiStrLn :: [String] -> IO ()
+putMultiStrLn = putStr . unlines
 
 readMaybeNatural :: String -> Maybe Natural
 readMaybeNatural = readMaybe
@@ -69,7 +69,9 @@ fizzBuzzProgram = do
   putStr "Insert the list length: "
   hFlush stdout
   s <- getLine
-  putStrLn "Let's go!"
   case readMaybeNatural s of
     Nothing -> putStrLn $ "Error: can't parse Natural from \"" ++ s ++ "\""
-    Just n  -> (putMultipleStrLn . fizzBuzzDescriptions . ListLength) n
+    Just n  -> putStrLn "Let's go!" >> fizzBuzzRender (ListLength n)
+      where
+        fizzBuzzRender :: ListLength -> IO ()
+        fizzBuzzRender = putMultiStrLn . fizzBuzzDescriptions
