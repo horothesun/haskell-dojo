@@ -34,11 +34,11 @@ spec = describe "All Lib functions" $ do
 
   describe "initialPositives" $ do
     prop "output's elements are all > 0" $
-      \n -> all (> 0) $ initialPositives n
+      \l -> all (> 0) $ initialPositives l
 
     prop "output's sorted in ascending order" $
-      \n ->
-        let outs = initialPositives n
+      \l ->
+        let outs = initialPositives l
         in outs == sort outs
 
     prop "output's length is the input value" $
@@ -76,10 +76,10 @@ spec = describe "All Lib functions" $ do
 
   describe "fizzBuzzDescription" $ do
     prop "of (Fizz n) is \"Fizz!\"" $
-      \n -> fizzBuzzDescription (Fizz n) == "Fizz!"
+      \n -> fizzBuzzDescription (Fizz n) == "Fizz"
 
     prop "of (Buzz n) is \"Buzz!\"" $
-      \n -> fizzBuzzDescription (Buzz n) == "Buzz!"
+      \n -> fizzBuzzDescription (Buzz n) == "Buzz"
 
     prop "of (FizzBuzz n) is \"FizzBuzz!\"" $
       \n -> fizzBuzzDescription (FizzBuzz n) == "FizzBuzz!"
