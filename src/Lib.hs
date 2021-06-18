@@ -58,8 +58,8 @@ fizzBuzzDescription fb = case fb of
 fizzBuzzDescriptions :: ListLength -> [String]
 fizzBuzzDescriptions l = fizzBuzzDescription <$> fizzBuzzList l
 
-putMultipleStrLn :: Show a => [a] -> IO ()
-putMultipleStrLn = putStr . unlines . fmap show
+putMultipleStrLn :: [String] -> IO ()
+putMultipleStrLn = putStr . unlines
 
 readMaybeNatural :: String -> Maybe Natural
 readMaybeNatural = readMaybe
