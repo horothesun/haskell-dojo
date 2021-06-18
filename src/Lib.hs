@@ -14,23 +14,6 @@ isPalindrome s = s == reverse s
 
 
 
-newtype ListLength = ListLength Natural
-  deriving (Eq, Show)
-
-
-initialPositives :: ListLength -> [Int]
-initialPositives (ListLength n) = [1..naturalToInt n]
-
--- import Data.List
--- initialPositives :: ListLength -> [Int]
--- initialPositives listLength = unfoldr aux (1, listLength)
---   where
---     aux :: (Int, ListLength) -> Maybe (Int, (Int, ListLength))
---     aux (acc, l@(ListLength n)) =
---       if acc == 1 + naturalToInt n
---       then Nothing
---       else Just (acc, (1 + acc, l))
-
 data FizzBuzz =
     Fizz Int
   | Buzz Int
@@ -44,6 +27,21 @@ fizzBuzz n
   | n `mod` 3 == 0                   = Fizz n
   | n `mod` 5 == 0                   = Buzz n
   | otherwise                        = Regular n
+
+newtype ListLength = ListLength Natural
+  deriving (Eq, Show)
+
+initialPositives :: ListLength -> [Int]
+initialPositives (ListLength n) = [1..naturalToInt n]
+-- import Data.List
+-- initialPositives :: ListLength -> [Int]
+-- initialPositives listLength = unfoldr aux (1, listLength)
+--   where
+--     aux :: (Int, ListLength) -> Maybe (Int, (Int, ListLength))
+--     aux (acc, l@(ListLength n)) =
+--       if acc == 1 + naturalToInt n
+--       then Nothing
+--       else Just (acc, (1 + acc, l))
 
 fizzBuzzList :: ListLength -> [FizzBuzz]
 fizzBuzzList l = fizzBuzz <$> initialPositives l
@@ -71,7 +69,4 @@ fizzBuzzProgram = do
   s <- getLine
   case readMaybeNatural s of
     Nothing -> putStrLn $ "Error: can't parse Natural from \"" ++ s ++ "\""
-    Just n  -> putStrLn "Let's go!" >> fizzBuzzRender (ListLength n)
-      where
-        fizzBuzzRender :: ListLength -> IO ()
-        fizzBuzzRender = putMultiStrLn . fizzBuzzDescriptions
+    Just n  -> putStrLn "Let's go!" >> (putMultiStrLn . fizzBuzzDescriptions . ListLength) n
