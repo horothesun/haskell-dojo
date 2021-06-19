@@ -1,6 +1,5 @@
 module Lib where
 
-import Data.Maybe
 import GHC.Natural
 import System.IO
 import Text.Read
