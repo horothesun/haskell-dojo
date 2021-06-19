@@ -1,21 +1,18 @@
 module Lib where
 
+import Data.Maybe
 import GHC.Natural
-import Text.Read
 import System.IO
+import Text.Read
 
 program :: IO ()
 program = fizzBuzzProgram
 
-
-
 isPalindrome :: String -> Bool
 isPalindrome s = s == reverse s
 
-
-
-data FizzBuzz =
-    Fizz Int
+data FizzBuzz
+  = Fizz Int
   | Buzz Int
   | FizzBuzz Int
   | Regular Int
@@ -24,15 +21,16 @@ data FizzBuzz =
 fizzBuzz :: Int -> FizzBuzz
 fizzBuzz n
   | n `mod` 3 == 0 && n `mod` 5 == 0 = FizzBuzz n
-  | n `mod` 3 == 0                   = Fizz n
-  | n `mod` 5 == 0                   = Buzz n
-  | otherwise                        = Regular n
+  | n `mod` 3 == 0 = Fizz n
+  | n `mod` 5 == 0 = Buzz n
+  | otherwise = Regular n
 
 newtype ListLength = ListLength Natural
   deriving (Eq, Show)
 
 initialPositives :: ListLength -> [Int]
-initialPositives (ListLength n) = [1..naturalToInt n]
+initialPositives (ListLength n) = [1 .. naturalToInt n]
+
 -- import Data.List
 -- initialPositives :: ListLength -> [Int]
 -- initialPositives listLength = unfoldr aux (1, listLength)
@@ -48,25 +46,39 @@ fizzBuzzList l = fizzBuzz <$> initialPositives l
 
 fizzBuzzDescription :: FizzBuzz -> String
 fizzBuzzDescription fb = case fb of
-  Fizz _     -> "Fizz"
-  Buzz _     -> "Buzz"
+  Fizz _ -> "Fizz"
+  Buzz _ -> "Buzz"
   FizzBuzz _ -> "FizzBuzz!"
-  Regular n  -> show n
+  Regular n -> show n
 
 fizzBuzzDescriptions :: ListLength -> [String]
 fizzBuzzDescriptions l = fizzBuzzDescription <$> fizzBuzzList l
 
-putMultiStrLn :: [String] -> IO ()
-putMultiStrLn = putStr . unlines
+-- the only interpretation done at this level is the DSL for fizzbuzz
+-- but no IO/Maybe/Either effect is present in this core
+business :: ListLength -> [String]
+business = fmap fizzBuzzDescription . fizzBuzzList
 
-readMaybeNatural :: String -> Maybe Natural
-readMaybeNatural = readMaybe
-
-fizzBuzzProgram :: IO ()
-fizzBuzzProgram = do
+input :: IO String
+input = do
   putStr "Insert the list length: "
   hFlush stdout -- prevents `getLine` getting executed before `putStr`
-  s <- getLine
-  case readMaybeNatural s of
-    Nothing -> putStrLn $ "Error: can't parse Natural from \"" ++ s ++ "\""
-    Just n  -> putStrLn "Let's go!" >> (putMultiStrLn . fizzBuzzDescriptions . ListLength) n
+  getLine
+
+program' :: String -> Maybe [String]
+program' = fmap business . parse
+
+program'' :: String -> String -- this method must have run the "failure" (Maybe, Either, etc) effect
+program'' = maybe renderError renderSuccess . program'
+  where
+    renderError = "Error: can't parse Natural"
+    renderSuccess s = "Let's go!\n" ++ unlines s
+
+parse :: String -> Maybe ListLength
+parse = fmap ListLength . readMaybe
+
+output :: String -> IO ()
+output = putStrLn
+
+fizzBuzzProgram :: IO ()
+fizzBuzzProgram = output . program'' =<< input
