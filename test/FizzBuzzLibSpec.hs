@@ -1,11 +1,11 @@
-module LibSpec where
+module FizzBuzzLibSpec where
 
 import GHC.Natural
 import Data.List
 import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.QuickCheck.Arbitrary
-import Lib
+import FizzBuzzLib
 
 
 instance Arbitrary Natural where
@@ -17,21 +17,7 @@ instance Arbitrary ListLength where
 
 
 spec :: Spec
-spec = describe "All Lib functions" $ do
-
-  describe "isPalindrome" $ do
-    it "of \"ciao\" is False" $
-      isPalindrome "ciao" `shouldBe` False
-
-    it "of \"\" is True" $
-      isPalindrome "" `shouldBe` True
-
-    it "of \"noon\" is True" $
-      isPalindrome "noon" `shouldBe` True
-
-    it "of \"radar\" is True" $
-      isPalindrome "radar" `shouldBe` True
-
+spec = describe "All FizzBuzzLib functions" $ do
 
   describe "initialPositives" $ do
     prop "output's elements are all > 0" $
@@ -73,17 +59,3 @@ spec = describe "All Lib functions" $ do
           Fizz 6, Regular 7, Regular 8, Fizz 9, Buzz 10,
           Regular 11, Fizz 12, Regular 13, Regular 14, FizzBuzz 15
         ]
-
-
-  describe "fizzBuzzDescription" $ do
-    prop "of (Fizz n) is \"Fizz!\"" $
-      \n -> fizzBuzzDescription (Fizz n) == "Fizz"
-
-    prop "of (Buzz n) is \"Buzz!\"" $
-      \n -> fizzBuzzDescription (Buzz n) == "Buzz"
-
-    prop "of (FizzBuzz n) is \"FizzBuzz!\"" $
-      \n -> fizzBuzzDescription (FizzBuzz n) == "FizzBuzz!"
-
-    it "of (Regular 8) is \"8\"" $
-      fizzBuzzDescription (Regular 8) `shouldBe` "8"

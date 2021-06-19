@@ -1,14 +1,10 @@
-module Lib where
+module FizzBuzzLib where
 
 import GHC.Natural
 import System.IO
 import Text.Read
+import Data.List
 
-program :: IO ()
-program = fizzBuzzProgram
-
-isPalindrome :: String -> Bool
-isPalindrome s = s == reverse s
 
 data FizzBuzz
   = Fizz Int
@@ -29,7 +25,6 @@ newtype ListLength = ListLength Natural
 
 initialPositives :: ListLength -> [Int]
 initialPositives (ListLength n) = [1 .. naturalToInt n]
-
 -- import Data.List
 -- initialPositives :: ListLength -> [Int]
 -- initialPositives listLength = unfoldr aux (1, listLength)
@@ -53,7 +48,7 @@ fizzBuzzDescription fb = case fb of
 fizzBuzzDescriptions :: ListLength -> [String]
 fizzBuzzDescriptions l = fizzBuzzDescription <$> fizzBuzzList l
 
--- the only interpretation done at this level is the DSL for fizzbuzz
+-- the only interpretation done at this level is the DSL for fizz-buzz
 -- but no IO/Maybe/Either effect is present in this core
 business :: ListLength -> [String]
 business = fmap fizzBuzzDescription . fizzBuzzList
@@ -67,11 +62,11 @@ input = do
 program' :: String -> Maybe [String]
 program' = fmap business . parse
 
-program'' :: String -> String -- this method must have run the "failure" (Maybe, Either, etc) effect
-program'' = maybe renderError renderSuccess . program'
+program'' :: String -> String -- must run the "failure" effect (Maybe, Either, etc)
+program'' s = (maybe renderError renderSuccess . program') s
   where
-    renderError = "Error: can't parse Natural"
-    renderSuccess s = "Let's go!\n" ++ unlines s
+    renderError = "Error: can't parse Natural from \"" ++ s ++ "\""
+    renderSuccess xs = "Let's go!\n" ++ intercalate "\n" xs
 
 parse :: String -> Maybe ListLength
 parse = fmap ListLength . readMaybe
