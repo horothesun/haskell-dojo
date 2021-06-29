@@ -37,7 +37,7 @@ spec = describe "All StateLib functions" $ do
         finalState = M.fromList [(UserId 1, user1Followers)]
     in runState computation initialFollowers `shouldBe` ((), finalState)
 
-  prop "saveFollow' returns Followers Map with `user` key and value containing `follower`)" $
+  prop "saveFollow' returns Followers Map with `user` key and value containing `follower`" $
     \follower user fs ->
       let newFs = saveFollow' follower user fs
           newUserFollowersMaybe = M.lookup user newFs
