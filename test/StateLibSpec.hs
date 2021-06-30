@@ -1,6 +1,7 @@
 module StateLibSpec where
 
 import Control.Monad.State
+import Data.Maybe
 import qualified Data.Map as M
 import qualified Data.List.NonEmpty as NL
 import qualified Data.Set.NonEmpty as NS
@@ -23,6 +24,13 @@ instance (Ord a, Arbitrary a) => Arbitrary (NS.NESet a) where
   arbitrary = NS.fromList <$> arbitrary
 
 
+findInNESet :: Ord a => a -> NS.NESet a -> Maybe a
+findInNESet x xs = if NS.member x xs then Just x else Nothing
+
+isNESetSingleton :: NS.NESet a -> Bool
+isNESetSingleton = (== 1) . NS.size
+
+
 spec :: Spec
 spec = describe "All StateLib functions" $ do
 
@@ -37,20 +45,19 @@ spec = describe "All StateLib functions" $ do
         finalState = M.fromList [(UserId 1, user1Followers)]
     in runState computation initialFollowers `shouldBe` ((), finalState)
 
-  prop "saveFollow' returns Followers Map with `user` key and value containing `follower`" $
-    \follower user fs ->
-      let newFs = saveFollow' follower user fs
-          newUserFollowersMaybe = M.lookup user newFs
-      in maybe False (NS.member follower) newUserFollowersMaybe
+  describe "saveFollow'" $ do
+    prop "returns Followers Map with `user` key and value containing `follower`" $
+      \follower user fs ->
+        let newFs = saveFollow' follower user fs
+        in isJust $ findInNESet follower =<< M.lookup user newFs
 
-  prop "saveUnfollow' on user with followers returns Followers Map either w/o `user` key or with `user` key and value not containing `follower`" $
-    \follower user fs -> M.member user fs ==>
-      let newFs = saveUnfollow' follower user fs
-          newUserFollowersMaybe = M.lookup user newFs
-          wasOnlyFollower = maybe False isSingleton oldUserFollowersMaybe
-          oldUserFollowersMaybe = M.lookup user fs
-          isSingleton = (== 1) . NS.size
-      in maybe wasOnlyFollower (NS.notMember follower) newUserFollowersMaybe
+    prop "on user with followers returns Followers Map either w/o `user` key or with `user` key and value not containing `follower`" $
+      \follower user fs -> M.member user fs ==>
+        let newFs = saveUnfollow' follower user fs
+            newUserFollowersMaybe = M.lookup user newFs
+            oldUserFollowersMaybe = M.lookup user fs
+            wasOnlyFollower = maybe False isNESetSingleton oldUserFollowersMaybe
+        in maybe wasOnlyFollower (NS.notMember follower) newUserFollowersMaybe
 
-  prop "saveUnfollow' on user w/o followers returns same Followers Map" $
-    \follower user fs -> M.notMember user fs ==> saveUnfollow' follower user fs == fs
+    prop "on user w/o followers returns same Followers Map" $
+      \follower user fs -> M.notMember user fs ==> saveUnfollow' follower user fs == fs
