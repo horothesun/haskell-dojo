@@ -45,6 +45,20 @@ spec = describe "All StateLib functions" $ do
         finalState = M.fromList [(UserId 1, user1Followers)]
     in runState computation initialFollowers `shouldBe` ((), finalState)
 
+  it "mix of saveFollows and saveUnfollow" $
+    let initialFollowers = M.empty
+        computation = do
+          _ <- saveFollow (UserId 4) (UserId 1)
+          _ <- saveFollow (UserId 3) (UserId 1)
+          _ <- saveFollow (UserId 2) (UserId 1)
+          _ <- saveUnfollow (UserId 3) (UserId 1)
+          _ <- saveFollow (UserId 5) (UserId 2)
+          return ()
+        user1Followers = NS.fromList $ NL.fromList [UserId 2, UserId 4]
+        user2Followers = NS.singleton $ UserId 5
+        finalState = M.fromList [(UserId 1, user1Followers), (UserId 2, user2Followers)]
+    in runState computation initialFollowers `shouldBe` ((), finalState)
+
   describe "saveFollow'" $ do
     prop "returns Followers Map with `user` key and value containing `follower`" $
       \follower user fs ->
