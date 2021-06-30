@@ -10,8 +10,7 @@ newtype UserId = UserId Int
 type Followers = M.Map UserId (NS.NESet UserId)
 
 saveFollow :: UserId -> UserId -> State Followers ()
-saveFollow follower user = state $
-  \fs -> ((), saveFollow' follower user fs)
+saveFollow follower user = state $ \fs -> ((), saveFollow' follower user fs)
 
 saveFollow' :: UserId -> UserId -> Followers -> Followers
 saveFollow' follower user fs = M.insert user newUserFollowers fs
@@ -20,8 +19,7 @@ saveFollow' follower user fs = M.insert user newUserFollowers fs
     newUserFollowers = maybe (NS.singleton follower) (NS.insert follower) oldUserFollowersMaybe
 
 saveUnfollow :: UserId -> UserId -> State Followers ()
-saveUnfollow follower user = state $
-  \fs -> ((), saveUnfollow' follower user fs)
+saveUnfollow follower user = state $ \fs -> ((), saveUnfollow' follower user fs)
 
 saveUnfollow' :: UserId -> UserId -> Followers -> Followers
 saveUnfollow' follower user fs = maybe fs removeFollower oldUserFollowersMaybe
