@@ -68,10 +68,8 @@ spec = describe "All StateLib functions" $ do
     prop "on user with followers returns Followers Map either w/o `user` key or with `user` key and value not containing `follower`" $
       \follower user fs -> M.member user fs ==>
         let newFs = saveUnfollow' follower user fs
-            newUserFollowersMaybe = M.lookup user newFs
-            oldUserFollowersMaybe = M.lookup user fs
-            wasOnlyFollower = maybe False isNESetSingleton oldUserFollowersMaybe
-        in maybe wasOnlyFollower (NS.notMember follower) newUserFollowersMaybe
+            wasOnlyFollower = maybe False isNESetSingleton (M.lookup user fs)
+        in maybe wasOnlyFollower (NS.notMember follower) (M.lookup user newFs)
 
     prop "on user w/o followers returns same Followers Map" $
       \follower user fs -> M.notMember user fs ==> saveUnfollow' follower user fs == fs
